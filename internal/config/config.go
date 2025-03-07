@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const configFileName = "gatorconfig.json"
+const configFileName = ".gatorconfig.json"
 
 type Config struct {
 	DatabaseUrl string `json:"db_url"`
@@ -17,7 +17,7 @@ func getConfigPath() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	configPath += "/.config/" + configFileName
+	configPath += "/" + configFileName
 	return configPath, nil
 }
 
