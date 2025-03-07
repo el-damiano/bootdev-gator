@@ -17,7 +17,7 @@ func handlerLogin(state *state, cmd command) error {
 	username := cmd.Args[0]
 	err := state.Config.SetUser(username)
 	if err != nil {
-		return err
+		return fmt.Errorf("couldn't set current user: %w", err)
 	}
 	log.Printf("%s set as current user\n", username)
 	return nil
@@ -36,9 +36,5 @@ func (cmdReg *commandRegistry) run(s *state, cmd command) error {
 	if !ok {
 		return fmt.Errorf("command %s not found\n", cmd.Name)
 	}
-	err := command(s, cmd)
-	if err != nil {
-		return err
-	}
-	return nil
+	return command(s, cmd)
 }
