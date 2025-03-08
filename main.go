@@ -12,8 +12,8 @@ import (
 )
 
 type state struct {
-	queries *database.Queries
-	config  *config.Config
+	db     *database.Queries
+	config *config.Config
 }
 
 func main() {
@@ -24,13 +24,22 @@ func main() {
 	}
 	fmt.Printf("read config %+v\n", configFile)
 
+	db, err := sql.Open("postgres", configFile.DatabaseUrl)
+	if err != nil {
+		log.Fatalf("error opening database %v\n", err)
+	}
+
+	dbQueries := database.New(db)
 	mainState := &state{
 		config: &configFile,
+		db:     dbQueries,
 	}
 
 	commands := commandRegistry{
 		reg: map[string]func(*state, command) error{},
 	}
+	commands.register("login", handlerLogin)
+	commands.register("register", handlerRegister)
 
 	sysArgs := os.Args
 	if len(sysArgs) < 2 {
@@ -38,28 +47,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	commandLogin := &command{
-		Name: sysArgs[1],
-		Args: sysArgs[2:],
-	}
-	commands.register(commandLogin.Name, handlerLogin)
-	err = commands.run(mainState, *commandLogin)
+	commandName := sysArgs[1]
+	commandArgs := sysArgs[2:]
+	err = commands.run(mainState, command{Name: commandName, Args: commandArgs})
 	if err != nil {
-		log.Fatalf("%v", err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
 	configFile, err = config.Read()
 	if err != nil {
 		log.Fatalf("error reading file %v\n", err)
 	}
-
 	fmt.Printf("new config set %+v\n", configFile)
-
-	db, err := sql.Open("postgres", mainState.config.DatabaseUrl)
-	if err != nil {
-		log.Fatalf("error opening database %v\n", err)
-	}
-
-	mainState.queries = database.New(db)
 }
