@@ -49,7 +49,7 @@ func handlerRegister(state *state, cmd command) error {
 	}
 	user, err := state.db.CreateUser(context.Background(), params)
 	if err != nil {
-		return fmt.Errorf("error creating user %s", err)
+		return fmt.Errorf("error creating user %w", err)
 	}
 
 	err = state.config.SetUser(user.Name)
@@ -58,6 +58,22 @@ func handlerRegister(state *state, cmd command) error {
 	}
 	log.Printf("user %s was created\n", username)
 	log.Printf("%+v\n", user)
+	return nil
+}
+
+func handlerUsers(state *state, cmd command) error {
+	_ = cmd
+	users, err := state.db.GetUsers(context.Background())
+	if err != nil {
+		return fmt.Errorf("error retrieving users %w", err)
+	}
+	for _, user := range users {
+		msg := fmt.Sprintf("* %s", user.Name)
+		if user.Name == state.config.UserCurrent {
+			msg += " (current)"
+		}
+		log.Print(msg)
+	}
 	return nil
 }
 
