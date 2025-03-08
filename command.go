@@ -61,6 +61,16 @@ func handlerRegister(state *state, cmd command) error {
 	return nil
 }
 
+func handlerReset(state *state, cmd command) error {
+	_ = cmd
+	err := state.db.DeleteAllUsers(context.Background())
+	if err != nil {
+		return fmt.Errorf("couldn't reset the database: %w", err)
+	}
+	log.Printf("database reset, hope you're happy")
+	return nil
+}
+
 type commandRegistry struct {
 	reg map[string]func(*state, command) error
 }
