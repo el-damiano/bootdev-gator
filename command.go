@@ -15,7 +15,7 @@ func handlerLogin(state *state, cmd command) error {
 		return fmt.Errorf("command %s expects [name] argument", cmd.Name)
 	}
 	username := cmd.Args[0]
-	err := state.Config.SetUser(username)
+	err := state.config.SetUser(username)
 	if err != nil {
 		return fmt.Errorf("couldn't set current user: %w", err)
 	}

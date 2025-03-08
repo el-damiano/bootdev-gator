@@ -1,15 +1,19 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/el-damiano/bootdev-gator/internal/config"
+	"github.com/el-damiano/bootdev-gator/internal/database"
+	_ "github.com/lib/pq"
 )
 
 type state struct {
-	Config *config.Config
+	queries *database.Queries
+	config  *config.Config
 }
 
 func main() {
@@ -21,9 +25,8 @@ func main() {
 	fmt.Printf("read config %+v\n", configFile)
 
 	mainState := &state{
-		Config: &configFile,
+		config: &configFile,
 	}
-	_ = mainState
 
 	commands := commandRegistry{
 		reg: map[string]func(*state, command) error{},
@@ -52,4 +55,11 @@ func main() {
 	}
 
 	fmt.Printf("new config set %+v\n", configFile)
+
+	db, err := sql.Open("postgres", mainState.config.DatabaseUrl)
+	if err != nil {
+		log.Fatalf("error opening database %v\n", err)
+	}
+
+	mainState.queries = database.New(db)
 }
