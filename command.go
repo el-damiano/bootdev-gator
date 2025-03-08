@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/el-damiano/bootdev-gator/internal/database"
@@ -31,7 +30,7 @@ func handlerLogin(state *state, cmd command) error {
 		return fmt.Errorf("couldn't set current user: %w", err)
 	}
 
-	log.Printf("%s set as current user\n", username)
+	fmt.Printf("%s set as current user\n", username)
 	return nil
 }
 
@@ -56,8 +55,8 @@ func handlerRegister(state *state, cmd command) error {
 	if err != nil {
 		return fmt.Errorf("couldn't set current user: %w", err)
 	}
-	log.Printf("user %s was created\n", username)
-	log.Printf("%+v\n", user)
+	fmt.Printf("user %s was created\n", username)
+	fmt.Printf("%+v\n", user)
 	return nil
 }
 
@@ -72,7 +71,7 @@ func handlerUsers(state *state, cmd command) error {
 		if user.Name == state.config.UserCurrent {
 			msg += " (current)"
 		}
-		log.Print(msg)
+		fmt.Println(msg)
 	}
 	return nil
 }
@@ -83,7 +82,7 @@ func handlerReset(state *state, cmd command) error {
 	if err != nil {
 		return fmt.Errorf("couldn't reset the database: %w", err)
 	}
-	log.Printf("database reset, hope you're happy")
+	fmt.Printf("database reset, hope you're happy")
 	return nil
 }
 
@@ -99,7 +98,7 @@ func handlerAgg(state *state, cmd command) error {
 		return fmt.Errorf("error fetching feed: %w", err)
 	}
 
-	log.Printf("Feed: %+v\n\n", feed)
+	fmt.Printf("Feed: %+v\n\n", feed)
 
 	return nil
 }
@@ -130,10 +129,10 @@ func handlerFeedAdd(state *state, cmd command) error {
 		return fmt.Errorf("error creating feed: %w", err)
 	}
 
-	log.Println("feed created successfully:")
+	fmt.Println("feed created successfully:")
 	printFeed(feed)
-	log.Println()
-	log.Println("=====================================")
+	fmt.Println()
+	fmt.Println("=====================================")
 	return nil
 }
 
@@ -157,12 +156,12 @@ func handlerFeedsList(state *state, cmd command) error {
 }
 
 func printFeed(feed database.Feed) {
-	log.Printf("* ID:            %s\n", feed.ID)
-	log.Printf("* Created:       %v\n", feed.CreatedAt)
-	log.Printf("* Updated:       %v\n", feed.UpdatedAt)
-	log.Printf("* Name:          %s\n", feed.Name)
-	log.Printf("* URL:           %s\n", feed.Url)
-	log.Printf("* UserID:        %s\n", feed.UserID)
+	fmt.Printf("* ID:            %s\n", feed.ID)
+	fmt.Printf("* Created:       %v\n", feed.CreatedAt)
+	fmt.Printf("* Updated:       %v\n", feed.UpdatedAt)
+	fmt.Printf("* Name:          %s\n", feed.Name)
+	fmt.Printf("* URL:           %s\n", feed.Url)
+	fmt.Printf("* UserID:        %s\n", feed.UserID)
 }
 
 type commandRegistry struct {

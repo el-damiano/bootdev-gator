@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
 
@@ -17,12 +16,7 @@ type state struct {
 }
 
 func main() {
-
 	configFile, err := config.Read()
-	if err != nil {
-		log.Fatalf("error reading file %v\n", err)
-	}
-	fmt.Printf("read config %+v\n", configFile)
 
 	db, err := sql.Open("postgres", configFile.DatabaseUrl)
 	if err != nil {
@@ -58,10 +52,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	configFile, err = config.Read()
-	if err != nil {
-		log.Fatalf("error reading file %v\n", err)
-	}
-	fmt.Printf("new config set %+v\n", configFile)
 }
