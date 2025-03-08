@@ -104,6 +104,48 @@ func handlerAgg(state *state, cmd command) error {
 	return nil
 }
 
+func handlerFeedAdd(state *state, cmd command) error {
+	_ = state
+	if len(cmd.Args) < 2 {
+		return fmt.Errorf("command %s expects [name] and [url] arguments", cmd.Name)
+	}
+
+	name := cmd.Args[0]
+	url := cmd.Args[1]
+	user, err := state.db.GetUser(context.Background(), state.config.UserCurrent)
+	if err != nil {
+		return fmt.Errorf("error getting user: %w", err)
+	}
+
+	params := database.CreateFeedParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
+		Name:      name,
+		Url:       url,
+		UserID:    user.ID,
+	}
+	feed, err := state.db.CreateFeed(context.Background(), params)
+	if err != nil {
+		return fmt.Errorf("error creating feed: %w", err)
+	}
+
+	log.Println("feed created successfully:")
+	printFeed(feed)
+	log.Println()
+	log.Println("=====================================")
+	return nil
+}
+
+func printFeed(feed database.Feed) {
+	log.Printf("* ID:            %s\n", feed.ID)
+	log.Printf("* Created:       %v\n", feed.CreatedAt)
+	log.Printf("* Updated:       %v\n", feed.UpdatedAt)
+	log.Printf("* Name:          %s\n", feed.Name)
+	log.Printf("* URL:           %s\n", feed.Url)
+	log.Printf("* UserID:        %s\n", feed.UserID)
+}
+
 type commandRegistry struct {
 	reg map[string]func(*state, command) error
 }

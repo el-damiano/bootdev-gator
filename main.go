@@ -43,6 +43,7 @@ func main() {
 	commands.register("reset", handlerReset)
 	commands.register("users", handlerUsers)
 	commands.register("agg", handlerAgg)
+	commands.register("addfeed", handlerFeedAdd)
 
 	sysArgs := os.Args
 	if len(sysArgs) < 2 {
