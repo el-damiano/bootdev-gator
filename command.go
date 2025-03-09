@@ -129,6 +129,12 @@ func handlerFeedAdd(state *state, cmd command) error {
 		return fmt.Errorf("error creating feed: %w", err)
 	}
 
+	cmdCreateFeedFollow := &command{
+		"follow",
+		[]string{feed.Url},
+	}
+	err = handlerFeedFollow(state, *cmdCreateFeedFollow)
+
 	fmt.Println("feed created successfully:")
 	printFeed(feed)
 	fmt.Println()
