@@ -155,6 +155,41 @@ func handlerFeedsList(state *state, cmd command) error {
 	return nil
 }
 
+func handlerFeedFollow(state *state, cmd command) error {
+	_ = state
+	if len(cmd.Args) < 1 {
+		return fmt.Errorf("command %s expects [url] argument", cmd.Name)
+	}
+
+	user, err := state.db.GetUser(context.Background(), state.config.UserCurrent)
+	if err != nil {
+		return fmt.Errorf("error getting user: %w", err)
+	}
+
+	url := cmd.Args[0]
+	feed, err := state.db.GetFeedsByUrl(context.Background(), url)
+	if err != nil {
+		return fmt.Errorf("error getting feed: %w", err)
+	}
+
+	params := database.CreateFeedFollowParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
+		UserID:    user.ID,
+		FeedID:    feed.ID,
+	}
+
+	feedFollow, err := state.db.CreateFeedFollow(context.Background(), params)
+	if err != nil {
+		return fmt.Errorf("error getting feeds: %w", err)
+	}
+
+	fmt.Printf("now following: %s\n", feedFollow.FeedName)
+
+	return nil
+}
+
 func printFeed(feed database.Feed) {
 	fmt.Printf("* ID:            %s\n", feed.ID)
 	fmt.Printf("* Created:       %v\n", feed.CreatedAt)
