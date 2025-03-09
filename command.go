@@ -68,7 +68,7 @@ func handlerUsers(state *state, cmd command) error {
 	}
 	for _, user := range users {
 		msg := fmt.Sprintf("* %s", user.Name)
-		if user.Name == state.config.UserCurrent {
+		if user.Name == state.config.UsernameCurrent {
 			msg += " (current)"
 		}
 		fmt.Println(msg)
@@ -111,7 +111,7 @@ func handlerFeedAdd(state *state, cmd command) error {
 
 	name := cmd.Args[0]
 	url := cmd.Args[1]
-	user, err := state.db.GetUser(context.Background(), state.config.UserCurrent)
+	user, err := state.db.GetUser(context.Background(), state.config.UsernameCurrent)
 	if err != nil {
 		return fmt.Errorf("error getting user: %w", err)
 	}
@@ -170,7 +170,7 @@ func handlerFeedFollow(state *state, cmd command) error {
 		return fmt.Errorf("command %s expects [url] argument", cmd.Name)
 	}
 
-	user, err := state.db.GetUser(context.Background(), state.config.UserCurrent)
+	user, err := state.db.GetUser(context.Background(), state.config.UsernameCurrent)
 	if err != nil {
 		return fmt.Errorf("error getting user: %w", err)
 	}
@@ -202,7 +202,7 @@ func handlerFeedFollow(state *state, cmd command) error {
 func handlerFeedFollowing(state *state, cmd command) error {
 	_ = cmd
 
-	user, err := state.db.GetUser(context.Background(), state.config.UserCurrent)
+	user, err := state.db.GetUser(context.Background(), state.config.UsernameCurrent)
 	if err != nil {
 		return fmt.Errorf("error getting user: %w", err)
 	}
