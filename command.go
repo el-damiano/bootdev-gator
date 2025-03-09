@@ -144,6 +144,10 @@ func handlerFeedsList(state *state, cmd command) error {
 		return fmt.Errorf("error getting feeds: %w", err)
 	}
 
+	if len(feeds) < 1 {
+		return fmt.Errorf("no feeds found")
+	}
+
 	fmt.Println("Feeds:")
 	for _, feed := range feeds {
 		fmt.Printf("User: %s\n", feed.UserName)
@@ -156,7 +160,6 @@ func handlerFeedsList(state *state, cmd command) error {
 }
 
 func handlerFeedFollow(state *state, cmd command) error {
-	_ = state
 	if len(cmd.Args) < 1 {
 		return fmt.Errorf("command %s expects [url] argument", cmd.Name)
 	}
@@ -186,6 +189,31 @@ func handlerFeedFollow(state *state, cmd command) error {
 	}
 
 	fmt.Printf("now following: %s\n", feedFollow.FeedName)
+
+	return nil
+}
+
+func handlerFeedFollowing(state *state, cmd command) error {
+	_ = cmd
+
+	user, err := state.db.GetUser(context.Background(), state.config.UserCurrent)
+	if err != nil {
+		return fmt.Errorf("error getting user: %w", err)
+	}
+
+	feeds, err := state.db.GetFeedFollowsForUser(context.Background(), user.ID)
+	if err != nil {
+		return fmt.Errorf("error getting user's feeds: %w", err)
+	}
+
+	if len(feeds) < 1 {
+		return fmt.Errorf("%s has no following feeds", user.Name)
+	}
+
+	fmt.Printf("%s feeds:\n", user.Name)
+	for _, feed := range feeds {
+		fmt.Printf("  - %s\n", feed.FeedName)
+	}
 
 	return nil
 }
