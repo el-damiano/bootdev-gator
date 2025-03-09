@@ -37,10 +37,10 @@ func main() {
 	commands.register("reset", handlerReset)
 	commands.register("users", handlerUsers)
 	commands.register("agg", handlerAgg)
-	commands.register("addfeed", handlerFeedAdd)
+	commands.register("addfeed", withUserLoggedIn(handlerFeedAdd))
 	commands.register("feeds", handlerFeedsList)
-	commands.register("follow", handlerFeedFollow)
-	commands.register("following", handlerFeedFollowing)
+	commands.register("follow", withUserLoggedIn(handlerFeedFollow))
+	commands.register("following", withUserLoggedIn(handlerFeedFollowing))
 
 	sysArgs := os.Args
 	if len(sysArgs) < 2 {
