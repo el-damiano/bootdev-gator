@@ -41,6 +41,7 @@ func main() {
 	commands.register("feeds", handlerFeedsList)
 	commands.register("follow", withUserLoggedIn(handlerFeedFollow))
 	commands.register("following", withUserLoggedIn(handlerFeedFollowing))
+	commands.register("unfollow", withUserLoggedIn(handlerFeedUnfollow))
 
 	sysArgs := os.Args
 	if len(sysArgs) < 2 {
