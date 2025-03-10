@@ -235,10 +235,6 @@ func handlerFeedFollowing(state *state, cmd command, user database.User) error {
 		return fmt.Errorf("error getting user's feeds: %w", err)
 	}
 
-	if len(feeds) < 1 {
-		return fmt.Errorf("%s has no following feeds", user.Name)
-	}
-
 	fmt.Printf("%s feeds:\n", user.Name)
 	for _, feed := range feeds {
 		fmt.Printf("  - %s\n", feed.FeedName)
