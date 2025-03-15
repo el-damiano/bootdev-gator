@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/el-damiano/bootdev-gator/internal/database"
@@ -241,6 +242,33 @@ func handlerFeedFollowing(state *state, cmd command, user database.User) error {
 	fmt.Printf("%s feeds:\n", user.Name)
 	for _, feed := range feeds {
 		fmt.Printf("  - %s\n", feed.FeedName)
+	}
+
+	return nil
+}
+
+func handlerBrowse(state *state, cmd command, user database.User) error {
+	limit := int32(2)
+
+	if len(cmd.Args) > 0 {
+		limitParsed, err := strconv.ParseInt(cmd.Args[0], 10, 32)
+		if err == nil {
+			limit = int32(limitParsed)
+		}
+	}
+
+	params := database.GetPostsForUserParams{
+		UserID: user.ID,
+		Limit:  limit,
+	}
+	posts, err := state.db.GetPostsForUser(context.Background(), params)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("%s's posts:\n", user.Name)
+	for _, post := range posts {
+		fmt.Printf(" - %s\n", post.Title)
 	}
 
 	return nil
