@@ -100,17 +100,20 @@ func handlerReset(state *state, cmd command) error {
 
 func handlerAgg(state *state, cmd command) error {
 	_ = state
-	url := "https://www.wagslane.dev/index.xml"
-	if len(cmd.Args) > 0 {
-		url = cmd.Args[0]
+	if len(cmd.Args) == 0 {
+		return fmt.Errorf("command %s expects [request interval] argument", cmd.Name)
 	}
-
-	feed, err := fetchFeed(context.Background(), url)
+	requestInterval, err := time.ParseDuration(cmd.Args[0])
 	if err != nil {
-		return fmt.Errorf("error fetching feed: %w", err)
+		return fmt.Errorf("invalid duration string: %w", err)
 	}
 
-	fmt.Printf("Feed: %+v\n\n", feed)
+	fmt.Printf("Collecting feeds every %s\n", requestInterval)
+
+	ticker := time.NewTicker(requestInterval)
+	for ; ; <-ticker.C {
+		scrapeFeeds(state)
+	}
 
 	return nil
 }
