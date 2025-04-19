@@ -60,6 +60,7 @@ go clean -i -cache -modcache
 
 # Usage
 
+```text
 Usage:
   bootdev-gator [command]
 
@@ -74,3 +75,4 @@ Available Commands:
   following               List out all feeds followed by current user
   unfollow [url]          Unfollow a feed
   browse [number]         List out post titles of current user
+```
