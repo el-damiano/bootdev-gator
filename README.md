@@ -32,7 +32,7 @@ And then install it with:
 go install github.com/el-damiano/bootdev-gator@latest
 ```
 
-Alternatively, you can forego `$GOPATH` and just do the following.
+Or alternatively:
 
 ```bash
 git clone https://github.com/el-damiano/bootdev-gator.git &&
